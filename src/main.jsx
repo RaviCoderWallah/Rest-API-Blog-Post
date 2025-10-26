@@ -12,6 +12,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Blog from "./Pages/Blog";
+import BlogById from "./Pages/BlogByIdPage";
 import { AppProvider } from "./Context/BlogContext";
 
 const router = createBrowserRouter([
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
       { path: "blog", element: <Blog /> },
+      { path: "blog/:id", element: <BlogById /> },
       { path: "*", element: <NotFound /> },
     ],
   },

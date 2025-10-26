@@ -1,7 +1,13 @@
+import BlogList from "../components/BlogList"
+import SideBar from "../components/SideBar"
+
 const Blog = () => {
   return (
-    <div>Blog</div>
+    <main>
+      <BlogList />
+      <SideBar />
+    </main>
   )
 }
 
-export default Blog;
+export default Blog
