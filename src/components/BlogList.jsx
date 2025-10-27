@@ -1,7 +1,7 @@
 import { IoMdEye } from "react-icons/io";
 import { GrDislike, GrLike } from "react-icons/gr";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { getAllBlogs } from "../API/blogApi";
+import { deleteBlog, getAllBlogs } from "../API/blogApi";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,12 +11,21 @@ const BlogList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Get deleted blog IDs from localStorage
+    const getDeletedBlogIds = () => {
+        const deletedIds = localStorage.getItem('deletedBlogIds');
+        return deletedIds ? JSON.parse(deletedIds) : [];
+    };
+
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
                 setLoading(true);
                 const blogs = await getAllBlogs();
-                setBlogs(blogs.posts);
+                const deletedIds = getDeletedBlogIds();
+                // Filter out deleted blogs
+                const filteredBlogs = blogs.posts.filter(blog => !deletedIds.includes(blog.id));
+                setBlogs(filteredBlogs);
                 setError(null);
             } catch (err) {
                 setError('Failed to fetch blogs'+ err);
@@ -29,6 +38,21 @@ const BlogList = () => {
 
     const handleReadMoreBtn = (id) => {
         navigate(`/blog/${id}`);
+    }
+
+    const handleDeletePost = async (id) => {
+        try {
+            await deleteBlog(id);
+            // Update UI
+            setBlogs(blogs.filter(blog => blog.id !== id));
+            
+            // Save deleted ID to localStorage
+            const deletedIds = getDeletedBlogIds();
+            deletedIds.push(id);
+            localStorage.setItem('deletedBlogIds', JSON.stringify(deletedIds));
+        } catch (err) {
+            setError('Error deleting the blog post: ' + err.message);
+        }
     }
 
     if (loading) {
@@ -94,7 +118,7 @@ const BlogList = () => {
                             <div className="edit-post-button">
                                 <FaEdit />
                             </div>
-                            <div className="delete-post-button">
+                            <div className="delete-post-button" onClick={ () => handleDeletePost(blog.id)}>
                                 <FaTrash />
                             </div>
                         </div>

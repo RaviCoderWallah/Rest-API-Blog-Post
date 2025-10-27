@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 const Home = () => {
   return (
     <>
@@ -14,7 +16,9 @@ const Home = () => {
             or shipping, we've got resources to accelerate your progress.
           </p>
           <div className="hero-actions">
+            <NavLink to="/blog">
             <button className="go-to-blog-page">See Latest Posts</button>
+            </NavLink>
             <button className="get-started-btn">Create New Post</button>
           </div>
         </div>
